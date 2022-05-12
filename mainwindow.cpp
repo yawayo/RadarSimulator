@@ -13,11 +13,11 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), m_settings("outSm
 
     timer = new QTimer(this);
     connect(timer, SIGNAL(timeout()), this, SLOT(readTime()));
-    timer->start(10);
+    timer->start(33);
 
     radarStatus->setStyleSheet("background-color: rgb(255, 0, 0); color: rgb(0, 0, 0); border-width: 1px; border-style: solid; border-color: rgb(0, 0, 0);");
-
     cameraStatus->setStyleSheet("background-color: rgb(255, 0, 0); color: rgb(0, 0, 0); border-width: 1px; border-style: solid; border-color: rgb(0, 0, 0);");
+    serialStatus->setStyleSheet("background-color: rgb(255, 0, 0); color: rgb(0, 0, 0); border-width: 1px; border-style: solid; border-color: rgb(0, 0, 0);");
 
     //make_log_path();
     //gettimeofday(&last_save, nullptr);
@@ -37,11 +37,11 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), m_settings("outSm
 
     qDebug("Try Camera Connect...");
     try_count = 1;
-    //while(!Connect_Camera())
+    while(!Connect_Camera())
     {
         qDebug("Retry...%d", try_count);
         try_count++;
-        sleep(1);
+        //sleep(1);
     }
     qDebug("Camera Connection Successful");
 }
@@ -62,7 +62,7 @@ void MainWindow::createUI()
     AI_Display_Img = new QLabel; AI_Display_Img->setMinimumSize(64, 384); AI_Display_Img->setMaximumSize(64, 384);
     AI_Display_spacer = new QSpacerItem(30, 0, QSizePolicy::Fixed, QSizePolicy::Expanding);
 
-    QPixmap off_Img("C:/Users/ODYSSEY/Desktop/build-PTZ_TEST-Desktop_Qt_6_2_3_MinGW_64_bit-Debug/debug/img/Display_ON.png");
+    QPixmap off_Img("C:/Users/ODYSSEY/Desktop/img/Display_ON.png");
     AI_Display_Img->setPixmap(off_Img);
     AI_Display_Img->setScaledContents(true);
 
@@ -127,7 +127,7 @@ void MainWindow::createUI()
     button_layout_spacer = new QSpacerItem(0, 30, QSizePolicy::Expanding, QSizePolicy::Fixed);
 
     Logo = new QLabel;
-    QPixmap logo("C:/Users/ODYSSEY/Desktop/build-PTZ_TEST-Desktop_Qt_6_2_3_MinGW_64_bit-Debug/debug/img/HBrain.png");
+    QPixmap logo("C:/Users/ODYSSEY/Desktop/img/HBrain.png");
     Logo->setPixmap(logo);
     Logo->setScaledContents(true);
 
@@ -138,6 +138,8 @@ void MainWindow::createUI()
     button_layout->addWidget(settingGroup);
     button_layout->addSpacerItem(button_layout_spacer);
     button_layout->addWidget(Logo);
+    button_layout->setContentsMargins(10, 10, 0, 5);
+    button_layout->setSpacing(10);
 
 
     // Main Panel
@@ -150,13 +152,13 @@ void MainWindow::createUI()
     Display_Radar = new DrawRadarInfo; Display_Radar->setStyleSheet("background-color: rgb(0, 0, 0);");
 
     main_page_layout2 = new QVBoxLayout;
-    Display_Camera = new QFrame; Display_Camera->setStyleSheet("background-color: rgb(0, 0, 0);");
+    Display_Camera = new QWidget; Display_Camera->setStyleSheet("background-color: rgb(0, 0, 0);");
     radarTable = new QTableView;
 
     main_page_layout2->addWidget(Display_Camera);
-    main_page_layout2->addWidget(radarTable);
-    main_page_layout2->setStretch(0, 1);
-    main_page_layout2->setStretch(1, 1);
+//    main_page_layout2->addWidget(radarTable);
+//    main_page_layout2->setStretch(0, 1);
+//    main_page_layout2->setStretch(1, 2);
 
 
     main_page_layout3 = new QVBoxLayout;
@@ -200,20 +202,18 @@ void MainWindow::createUI()
 
 
     PDStatus = new QLabel; PDStatus->setStyleSheet("background-color: rgb(0, 0, 0);");
-    QPixmap PDstatusImg("C:/Users/ODYSSEY/Desktop/build-PTZ_TEST-Desktop_Qt_6_2_3_MinGW_64_bit-Debug/debug/img/PD_OUT.png");
+    QPixmap PDstatusImg("C:/Users/ODYSSEY/Desktop/img/PD_OUT.png");
     PDStatus->setPixmap(PDstatusImg);
     PDStatus->setScaledContents(true);
 
     main_page_layout3->addLayout(basicSetting_layout);
     main_page_layout3->addWidget(PDStatus);
-    main_page_layout3->setStretch(0, 1);
-    main_page_layout3->setStretch(1, 1);
 
     main_page_layout->addWidget(Display_Radar);
     main_page_layout->addLayout(main_page_layout2);
     main_page_layout->addLayout(main_page_layout3);
-    main_page_layout->setStretch(0, 1);
-    main_page_layout->setStretch(1, 1);
+    main_page_layout->setStretch(0, 2);
+    main_page_layout->setStretch(1, 2);
     main_page_layout->setStretch(2, 1);
 
     main_page->setLayout(main_page_layout);
@@ -383,42 +383,24 @@ void MainWindow::createUI()
     read_InvalidClusters_layout->setStretch(0, 1);
     read_InvalidClusters_layout->setStretch(1, 1);
 
-    read_radarSetting_layout->addLayout(read_NVMReadStatus_layout);
-    read_radarSetting_layout->addLayout(read_NVMWriteStatus_layout);
-    read_radarSetting_layout->addLayout(read_MaxDistanceCfg_layout);
-    read_radarSetting_layout->addLayout(read_PersistentError_layout);
-    read_radarSetting_layout->addLayout(read_Interference_layout);
-    read_radarSetting_layout->addLayout(read_TemperatureError_layout);
-    read_radarSetting_layout->addLayout(read_TemporaryError_layout);
-    read_radarSetting_layout->addLayout(read_VoltageError_layout);
-    read_radarSetting_layout->addLayout(read_SensorID_layout);
-    read_radarSetting_layout->addLayout(read_SortIndex_layout);
-    read_radarSetting_layout->addLayout(read_RadarPowerCfg_layout);
-    read_radarSetting_layout->addLayout(read_CtrlRelayCfg_layout);
-    read_radarSetting_layout->addLayout(read_OutputTypeCfg_layout);
-    read_radarSetting_layout->addLayout(read_SendQualityCfg_layout);
-    read_radarSetting_layout->addLayout(read_SendExtInfoCfg_layout);
-    read_radarSetting_layout->addLayout(read_MotionRxState_layout);
-    read_radarSetting_layout->addLayout(read_RCSThreshold_layout);
+    read_radarSetting_layout->addLayout(read_NVMReadStatus_layout);     read_radarSetting_layout->addStretch(1);
+    read_radarSetting_layout->addLayout(read_NVMWriteStatus_layout);    read_radarSetting_layout->addStretch(1);
+    read_radarSetting_layout->addLayout(read_MaxDistanceCfg_layout);    read_radarSetting_layout->addStretch(1);
+    read_radarSetting_layout->addLayout(read_PersistentError_layout);   read_radarSetting_layout->addStretch(1);
+    read_radarSetting_layout->addLayout(read_Interference_layout);      read_radarSetting_layout->addStretch(1);
+    read_radarSetting_layout->addLayout(read_TemperatureError_layout);  read_radarSetting_layout->addStretch(1);
+    read_radarSetting_layout->addLayout(read_TemporaryError_layout);    read_radarSetting_layout->addStretch(1);
+    read_radarSetting_layout->addLayout(read_VoltageError_layout);      read_radarSetting_layout->addStretch(1);
+    read_radarSetting_layout->addLayout(read_SensorID_layout);          read_radarSetting_layout->addStretch(1);
+    read_radarSetting_layout->addLayout(read_SortIndex_layout);         read_radarSetting_layout->addStretch(1);
+    read_radarSetting_layout->addLayout(read_RadarPowerCfg_layout);     read_radarSetting_layout->addStretch(1);
+    read_radarSetting_layout->addLayout(read_CtrlRelayCfg_layout);      read_radarSetting_layout->addStretch(1);
+    read_radarSetting_layout->addLayout(read_OutputTypeCfg_layout);     read_radarSetting_layout->addStretch(1);
+    read_radarSetting_layout->addLayout(read_SendQualityCfg_layout);    read_radarSetting_layout->addStretch(1);
+    read_radarSetting_layout->addLayout(read_SendExtInfoCfg_layout);    read_radarSetting_layout->addStretch(1);
+    read_radarSetting_layout->addLayout(read_MotionRxState_layout);     read_radarSetting_layout->addStretch(1);
+    read_radarSetting_layout->addLayout(read_RCSThreshold_layout);      read_radarSetting_layout->addStretch(1);
     read_radarSetting_layout->addLayout(read_InvalidClusters_layout);
-    read_radarSetting_layout->setStretch(0, 1);
-    read_radarSetting_layout->setStretch(1, 1);
-    read_radarSetting_layout->setStretch(2, 1);
-    read_radarSetting_layout->setStretch(3, 1);
-    read_radarSetting_layout->setStretch(4, 1);
-    read_radarSetting_layout->setStretch(5, 1);
-    read_radarSetting_layout->setStretch(6, 1);
-    read_radarSetting_layout->setStretch(7, 1);
-    read_radarSetting_layout->setStretch(8, 1);
-    read_radarSetting_layout->setStretch(9, 1);
-    read_radarSetting_layout->setStretch(10, 1);
-    read_radarSetting_layout->setStretch(11, 1);
-    read_radarSetting_layout->setStretch(12, 1);
-    read_radarSetting_layout->setStretch(13, 1);
-    read_radarSetting_layout->setStretch(14, 1);
-    read_radarSetting_layout->setStretch(15, 1);
-    read_radarSetting_layout->setStretch(16, 1);
-    read_radarSetting_layout->setStretch(17, 1);
 
 
     write_radarSetting_layout = new QVBoxLayout;
@@ -511,28 +493,17 @@ void MainWindow::createUI()
     write_InvalidClusters_layout->setStretch(0, 1);
     write_InvalidClusters_layout->setStretch(1, 1);
 
-    write_radarSetting_layout->addLayout(write_MaxDistance_layout);
-    write_radarSetting_layout->addLayout(write_SensorID_layout);
-    write_radarSetting_layout->addLayout(write_OutputType_layout);
-    write_radarSetting_layout->addLayout(write_RadarPower_layout);
-    write_radarSetting_layout->addLayout(write_CtrlRelay_layout);
-    write_radarSetting_layout->addLayout(write_SendQuality_layout);
-    write_radarSetting_layout->addLayout(write_SendExtInfo_layout);
-    write_radarSetting_layout->addLayout(write_SortIndex_layout);
-    write_radarSetting_layout->addLayout(write_StoreInNVM_layout);
-    write_radarSetting_layout->addLayout(write_RCSThreshold_layout);
+    write_radarSetting_layout->addLayout(write_MaxDistance_layout);     write_radarSetting_layout->addStretch(1);
+    write_radarSetting_layout->addLayout(write_SensorID_layout);        write_radarSetting_layout->addStretch(1);
+    write_radarSetting_layout->addLayout(write_OutputType_layout);      write_radarSetting_layout->addStretch(1);
+    write_radarSetting_layout->addLayout(write_RadarPower_layout);      write_radarSetting_layout->addStretch(1);
+    write_radarSetting_layout->addLayout(write_CtrlRelay_layout);       write_radarSetting_layout->addStretch(1);
+    write_radarSetting_layout->addLayout(write_SendQuality_layout);     write_radarSetting_layout->addStretch(1);
+    write_radarSetting_layout->addLayout(write_SendExtInfo_layout);     write_radarSetting_layout->addStretch(1);
+    write_radarSetting_layout->addLayout(write_SortIndex_layout);       write_radarSetting_layout->addStretch(1);
+    write_radarSetting_layout->addLayout(write_StoreInNVM_layout);      write_radarSetting_layout->addStretch(1);
+    write_radarSetting_layout->addLayout(write_RCSThreshold_layout);    write_radarSetting_layout->addStretch(1);
     write_radarSetting_layout->addLayout(write_InvalidClusters_layout);
-    write_radarSetting_layout->setStretch(0, 1);
-    write_radarSetting_layout->setStretch(1, 1);
-    write_radarSetting_layout->setStretch(2, 1);
-    write_radarSetting_layout->setStretch(3, 1);
-    write_radarSetting_layout->setStretch(4, 1);
-    write_radarSetting_layout->setStretch(5, 1);
-    write_radarSetting_layout->setStretch(6, 1);
-    write_radarSetting_layout->setStretch(7, 1);
-    write_radarSetting_layout->setStretch(8, 1);
-    write_radarSetting_layout->setStretch(9, 1);
-    write_radarSetting_layout->setStretch(10, 1);
 
 
     radarSetting_value_layout->addLayout(read_radarSetting_layout);
@@ -565,8 +536,8 @@ void MainWindow::createUI()
 
     read_MinMax_layout = new QHBoxLayout;
     read_Empty_label = new QLabel;
-    read_Min_label = new QLabel("Min"); read_Min_label->setFont(QFont("맑은 고딕", 10, QFont::Bold)); read_Min_label->setAlignment(Qt::AlignRight);
-    read_Max_label = new QLabel("Max"); read_Max_label->setFont(QFont("맑은 고딕", 10, QFont::Bold)); read_Max_label->setAlignment(Qt::AlignRight);
+    read_Min_label = new QLabel("Min"); read_Min_label->setFont(QFont("맑은 고딕", 10, QFont::Bold)); read_Min_label->setAlignment(Qt::AlignRight); read_Min_label->setAlignment(Qt::AlignVCenter); read_Min_label->setMaximumHeight(30); read_Min_label->setMinimumHeight(30);
+    read_Max_label = new QLabel("Max"); read_Max_label->setFont(QFont("맑은 고딕", 10, QFont::Bold)); read_Max_label->setAlignment(Qt::AlignRight); read_Max_label->setAlignment(Qt::AlignVCenter); read_Max_label->setMaximumHeight(30); read_Max_label->setMinimumHeight(30);
     read_MinMax_layout->addWidget(read_Empty_label);
     read_MinMax_layout->addWidget(read_Min_label);
     read_MinMax_layout->addWidget(read_Max_label);
@@ -741,37 +712,21 @@ void MainWindow::createUI()
 
 
     read_filterSetting_layout->addLayout(read_MinMax_layout);
-    read_filterSetting_layout->addLayout(read_NofObj_layout);
-    read_filterSetting_layout->addLayout(read_Distance_layout);
-    read_filterSetting_layout->addLayout(read_Azimuth_layout);
-    read_filterSetting_layout->addLayout(read_VrelOncome_layout);
-    read_filterSetting_layout->addLayout(read_VrelDepart_layout);
-    read_filterSetting_layout->addLayout(read_RCS_layout);
-    read_filterSetting_layout->addLayout(read_Lifetime_layout);
-    read_filterSetting_layout->addLayout(read_Size_layout);
-    read_filterSetting_layout->addLayout(read_ProbExists_layout);
-    read_filterSetting_layout->addLayout(read_Y_layout);
-    read_filterSetting_layout->addLayout(read_X_layout);
-    read_filterSetting_layout->addLayout(read_VYRightLeft_layout);
-    read_filterSetting_layout->addLayout(read_VXOncome_layout);
-    read_filterSetting_layout->addLayout(read_VYLeftRight_layout);
+    read_filterSetting_layout->addLayout(read_NofObj_layout);       read_filterSetting_layout->addStretch(1);
+    read_filterSetting_layout->addLayout(read_Distance_layout);     read_filterSetting_layout->addStretch(1);
+    read_filterSetting_layout->addLayout(read_Azimuth_layout);      read_filterSetting_layout->addStretch(1);
+    read_filterSetting_layout->addLayout(read_VrelOncome_layout);   read_filterSetting_layout->addStretch(1);
+    read_filterSetting_layout->addLayout(read_VrelDepart_layout);   read_filterSetting_layout->addStretch(1);
+    read_filterSetting_layout->addLayout(read_RCS_layout);          read_filterSetting_layout->addStretch(1);
+    read_filterSetting_layout->addLayout(read_Lifetime_layout);     read_filterSetting_layout->addStretch(1);
+    read_filterSetting_layout->addLayout(read_Size_layout);         read_filterSetting_layout->addStretch(1);
+    read_filterSetting_layout->addLayout(read_ProbExists_layout);   read_filterSetting_layout->addStretch(1);
+    read_filterSetting_layout->addLayout(read_Y_layout);            read_filterSetting_layout->addStretch(1);
+    read_filterSetting_layout->addLayout(read_X_layout);            read_filterSetting_layout->addStretch(1);
+    read_filterSetting_layout->addLayout(read_VYRightLeft_layout);  read_filterSetting_layout->addStretch(1);
+    read_filterSetting_layout->addLayout(read_VXOncome_layout);     read_filterSetting_layout->addStretch(1);
+    read_filterSetting_layout->addLayout(read_VYLeftRight_layout);  read_filterSetting_layout->addStretch(1);
     read_filterSetting_layout->addLayout(read_VXDepart_layout);
-    read_filterSetting_layout->setStretch(0, 1);
-    read_filterSetting_layout->setStretch(1, 1);
-    read_filterSetting_layout->setStretch(2, 1);
-    read_filterSetting_layout->setStretch(3, 1);
-    read_filterSetting_layout->setStretch(4, 1);
-    read_filterSetting_layout->setStretch(5, 1);
-    read_filterSetting_layout->setStretch(6, 1);
-    read_filterSetting_layout->setStretch(7, 1);
-    read_filterSetting_layout->setStretch(8, 1);
-    read_filterSetting_layout->setStretch(9, 1);
-    read_filterSetting_layout->setStretch(10, 1);
-    read_filterSetting_layout->setStretch(11, 1);
-    read_filterSetting_layout->setStretch(12, 1);
-    read_filterSetting_layout->setStretch(13, 1);
-    read_filterSetting_layout->setStretch(14, 1);
-    read_filterSetting_layout->setStretch(15, 1);
 
 
     write_filterSetting_layout = new QVBoxLayout;
@@ -779,9 +734,9 @@ void MainWindow::createUI()
 
     write_MinMaxActive_layout = new QHBoxLayout;
     write_Empty_label = new QLabel;
-    write_Min_label = new QLabel("Min"); write_Min_label->setFont(QFont("맑은 고딕", 10, QFont::Bold)); write_Min_label->setAlignment(Qt::AlignRight);
-    write_Max_label = new QLabel("Max"); write_Max_label->setFont(QFont("맑은 고딕", 10, QFont::Bold)); write_Max_label->setAlignment(Qt::AlignRight);
-    write_Active_label = new QLabel("Active"); write_Active_label->setFont(QFont("맑은 고딕", 10, QFont::Bold)); write_Active_label->setAlignment(Qt::AlignRight);
+    write_Min_label = new QLabel("Min"); write_Min_label->setFont(QFont("맑은 고딕", 10, QFont::Bold)); write_Min_label->setAlignment(Qt::AlignRight); write_Min_label->setMaximumHeight(30); write_Min_label->setMinimumHeight(30);
+    write_Max_label = new QLabel("Max"); write_Max_label->setFont(QFont("맑은 고딕", 10, QFont::Bold)); write_Max_label->setAlignment(Qt::AlignRight);  write_Max_label->setMaximumHeight(30); write_Max_label->setMinimumHeight(30);
+    write_Active_label = new QLabel("Active"); write_Active_label->setFont(QFont("맑은 고딕", 10, QFont::Bold)); write_Active_label->setAlignment(Qt::AlignRight); write_Active_label->setMaximumHeight(30); write_Active_label->setMinimumHeight(30);
     write_MinMaxActive_layout->addWidget(write_Empty_label);
     write_MinMaxActive_layout->addWidget(write_Min_label);
     write_MinMaxActive_layout->addWidget(write_Max_label);
@@ -1003,39 +958,21 @@ void MainWindow::createUI()
 
 
     write_filterSetting_layout->addLayout(write_MinMaxActive_layout);
-    write_filterSetting_layout->addLayout(write_NofObj_layout);
-    write_filterSetting_layout->addLayout(write_Distance_layout);
-    write_filterSetting_layout->addLayout(write_Azimuth_layout);
-    write_filterSetting_layout->addLayout(write_Azimuth_layout);
-    write_filterSetting_layout->addLayout(write_VrelDepart_layout);
-    write_filterSetting_layout->addLayout(write_RCS_layout);
-    write_filterSetting_layout->addLayout(write_Lifetime_layout);
-    write_filterSetting_layout->addLayout(write_Size_layout);
-    write_filterSetting_layout->addLayout(write_ProbExists_layout);
-    write_filterSetting_layout->addLayout(write_Y_layout);
-    write_filterSetting_layout->addLayout(write_X_layout);
-    write_filterSetting_layout->addLayout(write_VYRightLeft_layout);
-    write_filterSetting_layout->addLayout(write_VXOncome_layout);
-    write_filterSetting_layout->addLayout(write_VYLeftRight_layout);
+    write_filterSetting_layout->addLayout(write_NofObj_layout);         write_filterSetting_layout->addStretch(1);
+    write_filterSetting_layout->addLayout(write_Distance_layout);       write_filterSetting_layout->addStretch(1);
+    write_filterSetting_layout->addLayout(write_Azimuth_layout);        write_filterSetting_layout->addStretch(1);
+    write_filterSetting_layout->addLayout(write_VrelOncome_layout);     write_filterSetting_layout->addStretch(1);
+    write_filterSetting_layout->addLayout(write_VrelDepart_layout);     write_filterSetting_layout->addStretch(1);
+    write_filterSetting_layout->addLayout(write_RCS_layout);            write_filterSetting_layout->addStretch(1);
+    write_filterSetting_layout->addLayout(write_Lifetime_layout);       write_filterSetting_layout->addStretch(1);
+    write_filterSetting_layout->addLayout(write_Size_layout);           write_filterSetting_layout->addStretch(1);
+    write_filterSetting_layout->addLayout(write_ProbExists_layout);     write_filterSetting_layout->addStretch(1);
+    write_filterSetting_layout->addLayout(write_Y_layout);              write_filterSetting_layout->addStretch(1);
+    write_filterSetting_layout->addLayout(write_X_layout);              write_filterSetting_layout->addStretch(1);
+    write_filterSetting_layout->addLayout(write_VYRightLeft_layout);    write_filterSetting_layout->addStretch(1);
+    write_filterSetting_layout->addLayout(write_VXOncome_layout);       write_filterSetting_layout->addStretch(1);
+    write_filterSetting_layout->addLayout(write_VYLeftRight_layout);    write_filterSetting_layout->addStretch(1);
     write_filterSetting_layout->addLayout(write_VXDepart_layout);
-    write_filterSetting_layout->setStretch(0, 1);
-    write_filterSetting_layout->setStretch(1, 1);
-    write_filterSetting_layout->setStretch(2, 1);
-    write_filterSetting_layout->setStretch(3, 1);
-    write_filterSetting_layout->setStretch(4, 1);
-    write_filterSetting_layout->setStretch(5, 1);
-    write_filterSetting_layout->setStretch(6, 1);
-    write_filterSetting_layout->setStretch(7, 1);
-    write_filterSetting_layout->setStretch(8, 1);
-    write_filterSetting_layout->setStretch(9, 1);
-    write_filterSetting_layout->setStretch(10, 1);
-    write_filterSetting_layout->setStretch(11, 1);
-    write_filterSetting_layout->setStretch(12, 1);
-    write_filterSetting_layout->setStretch(13, 1);
-    write_filterSetting_layout->setStretch(14, 1);
-    write_filterSetting_layout->setStretch(15, 1);
-
-
 
 
     filterSetting_value_layout->addLayout(read_filterSetting_layout);
@@ -1062,52 +999,49 @@ void MainWindow::createUI()
 
     // Show Status Bar
     statusBar_layout = new QHBoxLayout;
-    realTime = new QLabel;
-    statusBar_layout_spacer = new QSpacerItem(0, 40, QSizePolicy::Expanding, QSizePolicy::Fixed);
-    status_layout = new QHBoxLayout;
-    radarStatus = new QLabel;
-    cameraStatus = new QLabel;
+    realTime = new QLabel; realTime->setAlignment(Qt::AlignCenter); realTime->setMaximumSize(300, 20);
+    statusBar_layout_spacer = new QSpacerItem(0, 20, QSizePolicy::Expanding, QSizePolicy::Fixed);
+    status_layout = new QHBoxLayout; statusBar_layout->setSpacing(0);
+    radarStatus = new QLabel("Radar"); radarStatus->setAlignment(Qt::AlignCenter); radarStatus->setMaximumSize(100, 20);
+    cameraStatus = new QLabel("Camera"); cameraStatus->setAlignment(Qt::AlignCenter); cameraStatus->setMaximumSize(100, 20);
+    serialStatus = new QLabel("Serial"); serialStatus->setAlignment(Qt::AlignCenter); serialStatus->setMaximumSize(100, 20);
 
-    statusBar_layout->setSpacing(0);
 
-    realTime->setAlignment(Qt::AlignCenter);
-    radarStatus->setAlignment(Qt::AlignCenter);
-    cameraStatus->setAlignment(Qt::AlignCenter);
+    radarStatus->setFrameShape(QFrame::Box); radarStatus->setLineWidth(1);
+    cameraStatus->setFrameShape(QFrame::Box); cameraStatus->setLineWidth(1);
+    serialStatus->setFrameShape(QFrame::Box); serialStatus->setLineWidth(1);
 
-    radarStatus->setText("Radar");
-    cameraStatus->setText("Camera");
-    radarStatus->setFrameShape(QFrame::Box);
-    cameraStatus->setFrameShape(QFrame::Box);
-    radarStatus->setLineWidth(1);
-    cameraStatus->setLineWidth(1);
-
-    realTime->setMaximumSize(300, 40);
-    radarStatus->setMaximumSize(100, 40);
-    cameraStatus->setMaximumSize(100, 40);
 
     status_layout->addWidget(radarStatus);
     status_layout->addWidget(cameraStatus);
+    status_layout->addWidget(serialStatus);
     status_layout->setStretch(0, 1);
     status_layout->setStretch(1, 1);
+    status_layout->setStretch(2, 1);
+    status_layout->setContentsMargins(0, 0, 0, 0);
+    status_layout->setSpacing(0);
 
     statusBar_layout->addWidget(realTime);
     statusBar_layout->addSpacerItem(statusBar_layout_spacer);
     statusBar_layout->addLayout(status_layout);
+    statusBar_layout->setContentsMargins(0, 0, 0, 0);
 
 
-    main_Contents_layout->setContentsMargins(0, 0, 0, 0);
     main_Contents_layout->addLayout(button_layout);
     main_Contents_layout->addWidget(page);
     main_Contents_layout->addLayout(statusBar_layout);
     main_Contents_layout->setStretch(0, 1);
     main_Contents_layout->setStretch(1, 30);
     main_Contents_layout->setStretch(2, 1);
+    main_Contents_layout->setContentsMargins(0, 0, 0, 0);
+    main_Contents_layout->setSpacing(0);
 
-    total_layout->setContentsMargins(0, 0, 0, 0);
     total_layout->addLayout(AI_Display_layout);
     total_layout->addLayout(main_Contents_layout);
     total_layout->setStretch(0, 1);
     total_layout->setStretch(1, 20);
+    total_layout->setContentsMargins(0, 0, 0, 0);
+    total_layout->setSpacing(0);
 
     QWidget * window = new QWidget();
     window->setLayout(total_layout);
@@ -1155,13 +1089,6 @@ void MainWindow::readSettings() {
     cameraPW_edit->setText(m_settings.value("/cameraPW", "admin").toString()); cameraPW = cameraPW_edit->text();
 
     m_settings.endGroup();
-}
-
-void MainWindow::closeEvent(QCloseEvent * event)
-{
-    Disconnect_Radar();
-    Disconnect_Camera();
-    exit(0);
 }
 
 void MainWindow::readTime()
@@ -1915,11 +1842,39 @@ void MainWindow::on_Disconnectbtn_Camera_clicked()
 
 bool MainWindow::Connect_Camera()
 {
+
     if(!startCamera)
     {
         Connectbtn_Camera->setEnabled(false);
 
-        ////////////
+
+        NET_DVR_Init();
+        NET_DVR_SetConnectTime(2000, 1);
+        NET_DVR_SetReconnect(10000, true);
+
+        NET_DVR_DEVICEINFO_V30 DeviceInfo;
+        UserID = NET_DVR_Login_V30("183.99.41.239", 3333, "admin", "hbrain0372!", &DeviceInfo);
+        if(UserID < 0)
+        {
+            qDebug() << "Camera ERROR";
+            NET_DVR_Cleanup();
+        }
+        else
+        {
+            structPlayInfo.hPlayWnd = HWND(Display_Camera->winId());
+            structPlayInfo.lChannel = 33;
+            structPlayInfo.dwStreamType = 0;
+            structPlayInfo.dwLinkMode = 0;
+            structPlayInfo.bBlocked = 0;
+            structPlayInfo.dwDisplayBufNum = 15;
+
+            RealPlayHandle = NET_DVR_RealPlay_V40(UserID, &structPlayInfo, NULL, NULL);
+            if(RealPlayHandle < 0)
+                qDebug() << "Display Fail";
+            else
+                qDebug() << "Display succ";
+        }
+
 
         Connectbtn_Camera->setEnabled(false);
         Disconnectbtn_Camera->setEnabled(true);
@@ -1934,7 +1889,10 @@ bool MainWindow::Disconnect_Camera()
 {
     if(startCamera)
     {
-        ////////////
+        NET_DVR_StopRealPlay(RealPlayHandle);
+        RealPlayHandle = -1;
+        NET_DVR_Logout(UserID);
+
 
         Connectbtn_Camera->setEnabled(true);
         Disconnectbtn_Camera->setEnabled(false);
@@ -1942,16 +1900,19 @@ bool MainWindow::Disconnect_Camera()
         startCamera = false;
     }
 
+
     return true;
 }
 void MainWindow::on_Connectbtn_Serial_clicked()
 {
+    qDebug() << "Serial Connect";
 
+    qDebug() << (NET_DVR_PTZControlWithSpeed_Other(UserID, 1, TILT_DOWN, 0, 5) ? "TRUE" : "False");
 }
 
 void MainWindow::on_Disconnectbtn_Serial_clicked()
 {
-
+    qDebug() << "Serial Disconnect";
 }
 
 void MainWindow::on_Settingbtn_clicked()
@@ -1965,15 +1926,36 @@ void MainWindow::on_Settingbtn_clicked()
     {
         page->setCurrentIndex(0);
         Settingbtn->setText("Setting");
-    }/*
-    qDebug() << write_MinMaxActive_layout->geometry();
-    qDebug() << write_NofObj_layout->geometry();
-    qDebug() << write_Distance_layout->geometry();
-    qDebug() << write_Azimuth_layout->geometry();
-    qDebug() << write_Azimuth_layout->geometry();*/
+    }
 }
 
 void MainWindow::on_SaveSetting_btn_clicked()
 {
     writeSettings();
+}
+
+void MainWindow::closeEvent(QCloseEvent * event)
+{
+    if(startRadar)
+        Disconnect_Radar();
+    if(startCamera)
+        Disconnect_Camera();
+    startSerial;
+
+    exit(0);
+}
+void MainWindow::resizeEvent(QResizeEvent * event)
+{
+    qDebug() << "Resize" << this->geometry();
+    qDebug() << "C" << Display_Camera->geometry();
+    qDebug() << "P" << PDStatus->geometry();
+    qDebug() << "C" << Display_Camera->geometry().width() << cameraRatio << "P" << PDStatus->geometry().width() << PDRatio;
+    qDebug() << "C" << int(float(Display_Camera->geometry().width()) * cameraRatio) << "P" << int(float(PDStatus->geometry().width()) * PDRatio);
+
+    Display_Camera->setGeometry(QRect(Display_Camera->geometry().left(), Display_Camera->geometry().top(), Display_Camera->geometry().width(), int(float(Display_Camera->geometry().width()) * cameraRatio)));
+
+    PDStatus->setGeometry(QRect(PDStatus->geometry().left(), PDStatus->geometry().top(), PDStatus->geometry().width(), int(float(PDStatus->geometry().width()) * PDRatio)));
+
+    qDebug() << Display_Camera->geometry();
+    qDebug() << PDStatus->geometry();
 }

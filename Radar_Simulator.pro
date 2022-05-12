@@ -18,6 +18,7 @@ SOURCES += \
     serialclass.cpp \
 
 HEADERS += \
+    HCNetSDK.h \
     crc16.h \
     drawradarinfo.h \
     mainwindow.h \
@@ -41,6 +42,8 @@ LIBS += D:/OpenCV/opencv_build/bin/libopencv_stitching3415.dll
 LIBS += D:/OpenCV/opencv_build/bin/libopencv_superres3415.dll
 LIBS += D:/OpenCV/opencv_build/bin/libopencv_video3415.dll
 LIBS += D:/OpenCV/opencv_build/bin/libopencv_videostab3415.dll
+
+LIBS += -LC:/Users/ODYSSEY/Desktop/PTZTest/LIB/ -lHCCore -lHCNetSDK -lPlayCtrl -lHCAlarm -lHCGeneralCfgMgr -lHCPreview
 
 LIBS += -Wl,--verbose
 

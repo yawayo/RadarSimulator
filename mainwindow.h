@@ -15,6 +15,8 @@
 #include <QComboBox>
 #include <QCheckBox>
 
+#include <QUrl>
+
 #include <QMessageBox>
 
 #include <QSettings>
@@ -111,7 +113,8 @@ class MainWindow : public QMainWindow
 
     // Show Camera & Show Radar Info(text)
     QVBoxLayout* main_page_layout2;
-    QFrame* Display_Camera;
+    QWidget* Display_Camera;
+    float cameraRatio = 1080.0 / 1920.0;
     QTableView* radarTable;
 
 
@@ -137,6 +140,7 @@ class MainWindow : public QMainWindow
     QPushButton* SaveSetting_btn;
 
     QLabel* PDStatus;
+    float PDRatio = 294.0 / 440.0;
 
     // Radar Setting page
     QWidget* radarSetting_page;
@@ -427,6 +431,7 @@ class MainWindow : public QMainWindow
     QHBoxLayout* status_layout;
     QLabel* radarStatus;
     QLabel* cameraStatus;
+    QLabel* serialStatus;
 
 public:
 
@@ -533,6 +538,11 @@ public:
     QString cameraID;
     QString cameraPW;
 
+    LONG UserID;
+
+    NET_DVR_PREVIEWINFO structPlayInfo;
+    LONG RealPlayHandle;
+
     bool startCamera;
 
 
@@ -546,6 +556,11 @@ public:
 
 ////    // - Camera Thread Function
 ////    static void* callReadFunc_Camera(void *func);
+
+
+    //Serial Parameter
+    // - Serial Parameter
+    bool startSerial;
 
 
     //Test
@@ -565,6 +580,7 @@ public:
 
 protected:
     virtual void closeEvent(QCloseEvent*);
+    virtual void resizeEvent(QResizeEvent*);
 
 private slots:
 
